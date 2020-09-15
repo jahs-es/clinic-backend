@@ -19,10 +19,10 @@ type userController struct {
 
 type UserController interface {
 	Login() http.Handler
-	FindUser() http.Handler
-	GetUser() http.Handler
-	CreateUser() http.Handler
-	DeleteUser() http.Handler
+	Find() http.Handler
+	Get() http.Handler
+	Create() http.Handler
+	Delete() http.Handler
 }
 
 func NewUserController(us interactor.UserInteractor) *userController {
@@ -61,7 +61,7 @@ func (uc *userController) Login() http.Handler {
 	})
 }
 
-func (uc *userController) FindUser() http.Handler {
+func (uc *userController) Find() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error reading users"
 		var input struct {
@@ -84,7 +84,7 @@ func (uc *userController) FindUser() http.Handler {
 			Rol:       input.Rol,
 		}
 
-		data, err := uc.userInteractor.FindUser(u)
+		data, err := uc.userInteractor.Find(u)
 
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil && err != exception.ErrNotFound {
@@ -105,7 +105,7 @@ func (uc *userController) FindUser() http.Handler {
 	})
 }
 
-func (uc *userController) CreateUser() http.Handler {
+func (uc *userController) Create() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error adding user"
 		var input struct {
@@ -153,7 +153,7 @@ func (uc *userController) CreateUser() http.Handler {
 	})
 }
 
-func (uc *userController) GetUser() http.Handler {
+func (uc *userController) Get() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error reading user"
 		vars := mux.Vars(r)
@@ -178,7 +178,7 @@ func (uc *userController) GetUser() http.Handler {
 	})
 }
 
-func (uc *userController) DeleteUser() http.Handler {
+func (uc *userController) Delete() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error removing user"
 

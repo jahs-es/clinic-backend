@@ -8,19 +8,19 @@ import (
 
 func MakeUserHandlers(r *mux.Router, n negroni.Negroni, appController controller.AppController) {
 	r.Handle("/v1/user", n.With(
-		negroni.Wrap(appController.FindUser()),
-	)).Methods("GET", "OPTIONS").Name("FindUser")
+		negroni.Wrap(appController.Find()),
+	)).Methods("GET", "OPTIONS").Name("Find")
 
 	r.Handle("/v1/user", n.With(
-		negroni.Wrap(appController.CreateUser()),
+		negroni.Wrap(appController.Create()),
 	)).Methods("POST", "OPTIONS").Name("createUser")
 
 	r.Handle("/v1/user/{id}", n.With(
-		negroni.Wrap(appController.GetUser()),
+		negroni.Wrap(appController.Get()),
 	)).Methods("GET", "OPTIONS").Name("getUser")
 
 	r.Handle("/v1/user/{id}", n.With(
-		negroni.Wrap(appController.DeleteUser()),
+		negroni.Wrap(appController.Delete()),
 	)).Methods("DELETE", "OPTIONS").Name("deleteUser")
 }
 

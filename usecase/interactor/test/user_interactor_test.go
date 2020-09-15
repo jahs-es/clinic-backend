@@ -40,7 +40,7 @@ func Test_SearchAndFind(t *testing.T) {
 	searchUser := user.NewFixtureSearchUser()
 
 	t.Run("findUser", func(t *testing.T) {
-		c, err := m.FindUser(searchUser)
+		c, err := m.Find(searchUser)
 		assert.Nil(t, err)
 		assert.Equal(t, 1, len(c))
 		assert.Equal(t, "Jahs", c[0].Name)

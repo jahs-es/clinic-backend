@@ -25,7 +25,7 @@ type UserInteractor interface {
 	Create(e *model.User) (entity.ID, error)
 	Get(id entity.ID) (*presenterDTO.UserDTO, error)
 	Delete(id entity.ID) error
-	FindUser(e *model.User) ([]*presenterDTO.UserDTO, error)
+	Find(e *model.User) ([]*presenterDTO.UserDTO, error)
 }
 
 func NewUserInteractor(r repository.UserRepository, p presenter.UserPresenter, s password.Service, v validator.UserValidator) *userInteractor {
@@ -95,7 +95,7 @@ func (us *userInteractor) Delete(id entity.ID) error {
 	return us.UserRepository.Delete(id)
 }
 
-func (us *userInteractor) FindUser(e *model.User) ([]*presenterDTO.UserDTO, error) {
+func (us *userInteractor) Find(e *model.User) ([]*presenterDTO.UserDTO, error) {
 	u, err := us.UserRepository.Search(e)
 
 	if err != nil {
