@@ -32,3 +32,12 @@ test:
 
 fmt: ## gofmt and goimports all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
+
+generate-docker:
+	docker build -t jahs/clinic-api .
+
+launch-docker:
+	docker-compose up -d
+
+stop-docker:
+	docker-compose down --remove-orphans --volumes
