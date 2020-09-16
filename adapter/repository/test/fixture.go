@@ -17,3 +17,14 @@ func NewFixtureUser() *model.User {
 		CreatedAt: time.Now(),
 	}
 }
+
+func NewFixturePatient() *model.Patient {
+	return &model.Patient{
+		ID:        entity.NewID(),
+		Name:      "Jahs",
+		Address:   "Avda jahs",
+		Email:     "jahs.es@gmail.com",
+		Phone:     "965845487",
+		CreatedAt: time.Now(),
+	}
+}
