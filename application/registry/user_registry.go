@@ -24,7 +24,7 @@ func (r *registry) NewUserValidator() validator.UserValidator {
 }
 
 func (r *registry) NewUserRepository() ur.UserRepository {
-	return ir.NewMySQLRepoRepository(r.db)
+	return ir.NewMySQLUserRepository(r.db)
 }
 
 func (r *registry) NewUserPresenter() up.UserPresenter {

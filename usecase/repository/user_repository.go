@@ -7,7 +7,7 @@ import (
 
 type UserRepository interface {
 	Get(id entity.ID) (*model.User, error)
-	GetUserByEmail(email string) (*model.User, error)
+	GetByEmail(email string) (*model.User, error)
 	Search(e *model.User) ([]*model.User, error)
 	Create(e *model.User) (entity.ID, error)
 	Update(e *model.User) error

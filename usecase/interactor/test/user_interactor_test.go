@@ -14,7 +14,7 @@ import (
 )
 
 func Test_Create(t *testing.T) {
-	repo := repository.NewInmemRepository()
+	repo := repository.NewInmemUserRepository()
 	presenter := presenter.NewUserPresenter()
 	validator := validator.NewUserValidator(repo)
 
@@ -29,7 +29,7 @@ func Test_Create(t *testing.T) {
 }
 
 func Test_SearchAndFind(t *testing.T) {
-	repo := repository.NewInmemRepository()
+	repo := repository.NewInmemUserRepository()
 	presenter := presenter.NewUserPresenter()
 	validator := validator.NewUserValidator(repo)
 
@@ -53,7 +53,7 @@ func Test_SearchAndFind(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	repo := repository.NewInmemRepository()
+	repo := repository.NewInmemUserRepository()
 	presenter := presenter.NewUserPresenter()
 	validator := validator.NewUserValidator(repo)
 

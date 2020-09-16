@@ -8,26 +8,26 @@ import (
 )
 
 //IRepo in memory repo
-type IRepo struct {
+type IUserRepo struct {
 	m map[entity2.ID]*model.User
 }
 
-//NewInmemRepository create new repository
-func NewInmemRepository() *IRepo {
+//NewInmemUserRepository create new repository
+func NewInmemUserRepository() *IUserRepo {
 	var m = map[entity2.ID]*model.User{}
-	return &IRepo{
+	return &IUserRepo{
 		m: m,
 	}
 }
 
 //Create an user
-func (r *IRepo) Create(e *model.User) (entity2.ID, error) {
+func (r *IUserRepo) Create(e *model.User) (entity2.ID, error) {
 	r.m[e.ID] = e
 	return e.ID, nil
 }
 
 //Get an user
-func (r *IRepo) Get(id entity2.ID) (*model.User, error) {
+func (r *IUserRepo) Get(id entity2.ID) (*model.User, error) {
 	if r.m[id] == nil {
 		return nil, exception.ErrNotFound
 	}
@@ -35,7 +35,7 @@ func (r *IRepo) Get(id entity2.ID) (*model.User, error) {
 }
 
 //Get an user by email
-func (r *IRepo) GetUserByEmail(email string) (*model.User, error) {
+func (r *IUserRepo) GetByEmail(email string) (*model.User, error) {
 	var d *model.User
 
 	d = &model.User{Email: ""}
@@ -48,7 +48,7 @@ func (r *IRepo) GetUserByEmail(email string) (*model.User, error) {
 }
 
 //Update an user
-func (r *IRepo) Update(e *model.User) error {
+func (r *IUserRepo) Update(e *model.User) error {
 	_, err := r.Get(e.ID)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func (r *IRepo) Update(e *model.User) error {
 }
 
 //Search users
-func (r *IRepo) Search(e *model.User) ([]*model.User, error) {
+func (r *IUserRepo) Search(e *model.User) ([]*model.User, error) {
 	var d []*model.User
 
 	d = append(d, user.NewFixtureUser())
@@ -67,7 +67,7 @@ func (r *IRepo) Search(e *model.User) ([]*model.User, error) {
 }
 
 //Delete an user
-func (r *IRepo) Delete(id entity2.ID) error {
+func (r *IUserRepo) Delete(id entity2.ID) error {
 	if r.m[id] == nil {
 		return exception.ErrNotFound
 	}

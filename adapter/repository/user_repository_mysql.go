@@ -9,20 +9,20 @@ import (
 	"time"
 )
 
-//MySQLRepo mysql repo
-type MySQLRepo struct {
+//MySQLUserRepo mysql repo
+type MySQLUserRepo struct {
 	db *sql.DB
 }
 
-//NewMySQLRepoRepository create new repository
-func NewMySQLRepoRepository(db *sql.DB) *MySQLRepo {
-	return &MySQLRepo{
+//NewMySQLUserRepository create new repository
+func NewMySQLUserRepository(db *sql.DB) *MySQLUserRepo {
+	return &MySQLUserRepo{
 		db: db,
 	}
 }
 
 //Create an user
-func (r *MySQLRepo) Create(e *model.User) (entity2.ID, error) {
+func (r *MySQLUserRepo) Create(e *model.User) (entity2.ID, error) {
 	stmt, err := r.db.Prepare(`
 		insert into user (id, email, password, name, rol, created_at) 
 		values(?,?,?,?,?,?)`)
@@ -48,7 +48,7 @@ func (r *MySQLRepo) Create(e *model.User) (entity2.ID, error) {
 }
 
 //Get an user
-func (r *MySQLRepo) Get(id entity2.ID) (*model.User, error) {
+func (r *MySQLUserRepo) Get(id entity2.ID) (*model.User, error) {
 	stmt, err := r.db.Prepare(`select id, email, name, rol, active from user where id = ?`)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (r *MySQLRepo) Get(id entity2.ID) (*model.User, error) {
 }
 
 //Get an user by email
-func (r *MySQLRepo) GetUserByEmail(email string) (*model.User, error) {
+func (r *MySQLUserRepo) GetByEmail(email string) (*model.User, error) {
 	stmt, err := r.db.Prepare(`select id, password, email from user where email = ?`)
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ func (r *MySQLRepo) GetUserByEmail(email string) (*model.User, error) {
 	return &u, nil
 }
 
-func (r *MySQLRepo) Update(e *model.User) error {
+func (r *MySQLUserRepo) Update(e *model.User) error {
 	e.UpdatedAt = time.Now()
 	_, err := r.db.Exec("update user set email = ?, password = ?, name = ?, rol = ?, updated_at = ? where id = ?", e.Email, e.Password, e.Name, e.Rol, e.UpdatedAt.Format("2006-01-02"), e.ID)
 	if err != nil {
@@ -109,7 +109,7 @@ func getExpresion(column string, value string) string {
 }
 
 //Search users
-func (r *MySQLRepo) Search(e *model.User) ([]*model.User, error) {
+func (r *MySQLUserRepo) Search(e *model.User) ([]*model.User, error) {
 	sql := "select id, email, name, rol, active from user where "
 	sql += getExpresion("name", e.Name)
 	sql += getExpresion("email", e.Email)
@@ -139,7 +139,7 @@ func (r *MySQLRepo) Search(e *model.User) ([]*model.User, error) {
 }
 
 //Delete an user
-func (r *MySQLRepo) Delete(id entity2.ID) error {
+func (r *MySQLUserRepo) Delete(id entity2.ID) error {
 	_, err := r.db.Exec("delete from user where id = ?", id)
 	if err != nil {
 		return err

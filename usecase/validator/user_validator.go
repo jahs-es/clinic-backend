@@ -19,7 +19,7 @@ func NewUserValidator(r repository.UserRepository) UserValidator {
 }
 
 func (uv *userValidator) UserNotExist(email string) error {
-	data, err := uv.UserRepository.GetUserByEmail(email)
+	data, err := uv.UserRepository.GetByEmail(email)
 
 	if err != nil {
 		return err

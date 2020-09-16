@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-//User data
 type User struct {
 	ID        entity.ID
 	Email     string

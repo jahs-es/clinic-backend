@@ -33,7 +33,7 @@ func NewUserInteractor(r repository.UserRepository, p presenter.UserPresenter, s
 }
 
 func (us *userInteractor) Login(email string, password string) (string, error) {
-	data, err := us.UserRepository.GetUserByEmail(email)
+	data, err := us.UserRepository.GetByEmail(email)
 
 	if data == nil {
 		return "", err
