@@ -50,7 +50,7 @@ func (us *userInteractor) Login(email string, password string) (string, error) {
 		return "", err
 	}
 
-	token, err := auth.CreateToken(toJ.ID.ID())
+	token, err := auth.CreateToken(toJ.ID)
 
 	return token, err
 }

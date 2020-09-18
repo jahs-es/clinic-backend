@@ -24,8 +24,8 @@ func NewMySQLPatientRepository(db *sql.DB) *MySQLPatientRepo {
 //Create an user
 func (r *MySQLPatientRepo) Create(e *model.Patient) (entity2.ID, error) {
 	stmt, err := r.db.Prepare(`
-		insert into patient (id, name, address, email, phone, active, created_at) 
-		values(?,?,?,?,?,?,?)`)
+		insert into patient (id, name, address, email, phone, active, created_at, created_by) 
+		values(?,?,?,?,?,?,?,?)`)
 	if err != nil {
 		return e.ID, err
 	}
@@ -37,6 +37,7 @@ func (r *MySQLPatientRepo) Create(e *model.Patient) (entity2.ID, error) {
 		e.Phone,
 		e.Active,
 		time.Now().Format("2006-01-02"),
+		e.CreatedBy,
 	)
 	if err != nil {
 		return e.ID, err

@@ -14,4 +14,6 @@ type Patient struct {
 	Active    bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	CreatedBy string
+	UpdatedBy string
 }

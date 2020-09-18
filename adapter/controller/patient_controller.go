@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/jahs/clinic-backend/adapter/auth"
 	"github.com/jahs/clinic-backend/adapter/entity"
 	"github.com/jahs/clinic-backend/domain/model"
 	"github.com/jahs/clinic-backend/usecase/exception"
@@ -87,6 +88,15 @@ func (uc *patientController) Create() http.Handler {
 			w.Write([]byte(errorMessage))
 			return
 		}
+
+		userId, error := auth.ExtractTokenID(r)
+		if error != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusForbidden)
+			w.Write([]byte(errorMessage))
+			return
+		}
+
 		//TODO: validate data ;)
 		u := &model.Patient{
 			ID:        entity.NewID(),
@@ -95,6 +105,7 @@ func (uc *patientController) Create() http.Handler {
 			Email:     input.Email,
 			Phone:     input.Phone,
 			CreatedAt: time.Now(),
+			CreatedBy: userId.(string),
 		}
 		u.ID, err = uc.patientInteractor.Create(u)
 		if err != nil {
