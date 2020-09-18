@@ -21,6 +21,7 @@ type patientInteractor struct {
 
 type PatientInteractor interface {
 	Create(e *model.Patient) (entity.ID, error)
+	Update(e *model.Patient) error
 	Get(id entity.ID) (*presenterDTO.PatientDTO, error)
 	Delete(id entity.ID) error
 	Find(e *model.Patient) ([]*presenterDTO.PatientDTO, error)
@@ -40,6 +41,10 @@ func (us *patientInteractor) Create(e *model.Patient) (entity.ID, error) {
 	e.CreatedAt = time.Now()
 
 	return us.PatientRepository.Create(e)
+}
+
+func (us *patientInteractor) Update(e *model.Patient) error {
+	return us.PatientRepository.Update(e)
 }
 
 func (us *patientInteractor) Get(id entity.ID) (*presenterDTO.PatientDTO, error) {

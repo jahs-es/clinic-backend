@@ -24,8 +24,8 @@ func NewMySQLPatientRepository(db *sql.DB) *MySQLPatientRepo {
 //Create an user
 func (r *MySQLPatientRepo) Create(e *model.Patient) (entity2.ID, error) {
 	stmt, err := r.db.Prepare(`
-		insert into patient (id, name, address, email, phone, active, created_at, created_by) 
-		values(?,?,?,?,?,?,?,?)`)
+		insert into patient (id, name, address, email, phone, created_at, created_by) 
+		values(?,?,?,?,?,?,?)`)
 	if err != nil {
 		return e.ID, err
 	}
@@ -35,7 +35,6 @@ func (r *MySQLPatientRepo) Create(e *model.Patient) (entity2.ID, error) {
 		e.Address,
 		e.Email,
 		e.Phone,
-		e.Active,
 		time.Now().Format("2006-01-02"),
 		e.CreatedBy,
 	)
@@ -95,7 +94,7 @@ func (r *MySQLPatientRepo) GetByEmail(email string) (*model.Patient, error) {
 
 func (r *MySQLPatientRepo) Update(e *model.Patient) error {
 	e.UpdatedAt = time.Now()
-	_, err := r.db.Exec("update patient set name = ?, address = ?, email = ?, phone = ?, updated_at = ? where id = ?", e.Name, e.Address, e.Email, e.Phone, e.Active, e.UpdatedAt.Format("2006-01-02"), e.ID)
+	_, err := r.db.Exec("update patient set name = ?, address = ?, email = ?, phone = ?, updated_at = ?, updated_by = ? where id = ?", e.Name, e.Address, e.Email, e.Phone, e.UpdatedAt.Format("2006-01-02"),e.UpdatedBy, e.ID)
 	if err != nil {
 		return err
 	}

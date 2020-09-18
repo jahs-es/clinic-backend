@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jahs/clinic-backend/adapter/auth"
 	"github.com/jahs/clinic-backend/adapter/entity"
+	presenterDTO "github.com/jahs/clinic-backend/adapter/presenter"
 	"github.com/jahs/clinic-backend/domain/model"
 	"github.com/jahs/clinic-backend/usecase/exception"
 	"github.com/jahs/clinic-backend/usecase/interactor"
@@ -21,6 +22,7 @@ type PatientController interface {
 	Find() http.Handler
 	Get() http.Handler
 	Create() http.Handler
+	Update() http.Handler
 	Delete() http.Handler
 }
 
@@ -114,12 +116,13 @@ func (uc *patientController) Create() http.Handler {
 			w.Write([]byte(err.Error()))
 			return
 		}
-		toJ := &model.Patient{
-			ID:    u.ID,
-			Name:  u.Name,
+		toJ := &presenterDTO.PatientDTO{
+			ID:      u.ID,
+			Name:    u.Name,
 			Address: u.Address,
-			Email: u.Email,
-			Phone: u.Phone,
+			Email:   u.Email,
+			Phone:   u.Phone,
+			Active:  true,
 		}
 
 		w.WriteHeader(http.StatusCreated)
@@ -129,6 +132,53 @@ func (uc *patientController) Create() http.Handler {
 			w.Write([]byte(errorMessage))
 			return
 		}
+	})
+}
+
+func (uc *patientController) Update() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		errorMessage := "Error adding patient"
+		var input struct {
+			Name    string `json:"name"`
+			Address string `json:"address"`
+			Email   string `json:"email"`
+			Phone   string `json:"phone"`
+		}
+		err := json.NewDecoder(r.Body).Decode(&input)
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(errorMessage))
+			return
+		}
+
+		userId, error := auth.ExtractTokenID(r)
+		if error != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusForbidden)
+			w.Write([]byte(errorMessage))
+			return
+		}
+
+		//TODO: validate data ;)
+		u := &model.Patient{
+			ID:        entity.NewID(),
+			Name:      input.Name,
+			Address:   input.Address,
+			Email:     input.Email,
+			Phone:     input.Phone,
+			UpdatedAt: time.Now(),
+			UpdatedBy: userId.(string),
+		}
+		err = uc.patientInteractor.Update(u)
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
 	})
 }
 

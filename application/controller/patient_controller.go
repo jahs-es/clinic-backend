@@ -15,6 +15,10 @@ func MakePatientHandlers(r *mux.Router, n negroni.Negroni, appController control
 		negroni.Wrap(appController.Create()),
 	)).Methods("POST", "OPTIONS").Name("createPatient")
 
+	r.Handle("/v1/patient", n.With(
+		negroni.Wrap(appController.Update()),
+	)).Methods("PUT", "OPTIONS").Name("updatePatient")
+
 	r.Handle("/v1/patient/{id}", n.With(
 		negroni.Wrap(appController.Get()),
 	)).Methods("GET", "OPTIONS").Name("getPatient")
