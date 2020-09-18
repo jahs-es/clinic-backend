@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/jahs/clinic-backend/adapter/entity"
+	presenterDTO "github.com/jahs/clinic-backend/adapter/presenter"
 	"github.com/jahs/clinic-backend/domain/model"
 	"github.com/jahs/clinic-backend/usecase/exception"
 	"github.com/jahs/clinic-backend/usecase/interactor"
@@ -11,7 +12,6 @@ import (
 	"net/http"
 	"time"
 )
-
 
 type userController struct {
 	userInteractor interactor.UserInteractor
@@ -65,9 +65,9 @@ func (uc *userController) Find() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error reading users"
 		var input struct {
-			Email    string `json:"email"`
-			Name     string `json:"name"`
-			Rol      string `json:"rol"`
+			Email string `json:"email"`
+			Name  string `json:"name"`
+			Rol   string `json:"rol"`
 		}
 
 		err := json.NewDecoder(r.Body).Decode(&input)
@@ -79,9 +79,9 @@ func (uc *userController) Find() http.Handler {
 		}
 		//TODO: validate data ;)
 		u := &model.User{
-			Email:     input.Email,
-			Name:      input.Name,
-			Rol:       input.Rol,
+			Email: input.Email,
+			Name:  input.Name,
+			Rol:   input.Rol,
 		}
 
 		data, err := uc.userInteractor.Find(u)
@@ -137,10 +137,12 @@ func (uc *userController) Create() http.Handler {
 			w.Write([]byte(err.Error()))
 			return
 		}
-		toJ := &model.User{
-			ID:    u.ID,
-			Email: u.Email,
-			Name:  u.Name,
+		toJ := &presenterDTO.UserDTO{
+			ID:     u.ID,
+			Email:  u.Email,
+			Name:   u.Name,
+			Rol:    u.Rol,
+			Active: true,
 		}
 
 		w.WriteHeader(http.StatusCreated)
@@ -200,4 +202,3 @@ func (uc *userController) Delete() http.Handler {
 		}
 	})
 }
-
