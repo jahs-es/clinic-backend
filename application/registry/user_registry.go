@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"database/sql"
 	"github.com/jahs/clinic-backend/adapter/controller"
 	ip "github.com/jahs/clinic-backend/adapter/presenter"
 	ir "github.com/jahs/clinic-backend/adapter/repository"
@@ -11,22 +12,30 @@ import (
 	"github.com/jahs/clinic-backend/usecase/validator"
 )
 
-func (r *registry) NewUserController() controller.UserController {
+type userRegistry struct {
+	db *sql.DB
+}
+
+func NewUserRegistry(db *sql.DB)  *userRegistry {
+	return &userRegistry{db}
+}
+
+func (r *userRegistry) NewUserController() controller.UserController {
 	return controller.NewUserController(r.NewUserInteractor())
 }
 
-func (r *registry) NewUserInteractor() interactor.UserInteractor {
+func (r *userRegistry) NewUserInteractor() interactor.UserInteractor {
 	return interactor.NewUserInteractor(r.NewUserRepository(), r.NewUserPresenter(), s.NewService(), r.NewUserValidator())
 }
 
-func (r *registry) NewUserValidator() validator.UserValidator {
+func (r *userRegistry) NewUserValidator() validator.UserValidator {
 	return validator.NewUserValidator(r.NewUserRepository())
 }
 
-func (r *registry) NewUserRepository() ur.UserRepository {
+func (r *userRegistry) NewUserRepository() ur.UserRepository {
 	return ir.NewMySQLUserRepository(r.db)
 }
 
-func (r *registry) NewUserPresenter() up.UserPresenter {
+func (r *userRegistry) NewUserPresenter() up.UserPresenter {
 	return ip.NewUserPresenter()
 }

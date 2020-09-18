@@ -6,7 +6,7 @@ import (
 	"github.com/jahs/clinic-backend/adapter/controller"
 )
 
-func MakePatientHandlers(r *mux.Router, n negroni.Negroni, appController controller.AppController) {
+func MakePatientHandlers(r *mux.Router, n negroni.Negroni, appController controller.PatientController) {
 	r.Handle("/v1/patient", n.With(
 		negroni.Wrap(appController.Find()),
 	)).Methods("GET", "OPTIONS").Name("Find")

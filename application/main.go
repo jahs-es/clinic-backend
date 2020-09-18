@@ -29,7 +29,8 @@ import (
 func main() {
 	db, err := openDatabase()
 
-	registry := registry.NewRegistry(db)
+	userRegistry := registry.NewUserRegistry(db)
+	patientRegistry := registry.NewPatientRegistry(db)
 
 	metricService, err := metric.NewPrometheusService()
 	if err != nil {
@@ -54,10 +55,13 @@ func main() {
 	)
 
 	//login
-	controller.MakeLoginHandlers(r, *securedHandler, registry.NewAppController())
+	controller.MakeLoginHandlers(r, *securedHandler, userRegistry.NewUserController())
 
 	//user
-	controller.MakeUserHandlers(r, *notSecuredHandler, registry.NewAppController())
+	controller.MakeUserHandlers(r, *notSecuredHandler, userRegistry.NewUserController())
+
+	//patient
+	controller.MakePatientHandlers(r, *notSecuredHandler, patientRegistry.NewPatientController())
 
 	http.Handle("/", r)
 	http.Handle("/metrics", promhttp.Handler())
