@@ -31,6 +31,7 @@ func main() {
 
 	userRegistry := registry.NewUserRegistry(db)
 	patientRegistry := registry.NewPatientRegistry(db)
+	treatmentRegistry := registry.NewTreatmentRegistry(db)
 
 	metricService, err := metric.NewPrometheusService()
 	if err != nil {
@@ -62,6 +63,9 @@ func main() {
 
 	//patient
 	controller.MakePatientHandlers(r, *notSecuredHandler, patientRegistry.NewPatientController())
+
+	//treatment
+	controller.MakeTreatmentHandlers(r, *notSecuredHandler, treatmentRegistry.NewTreatmentController())
 
 	http.Handle("/", r)
 	http.Handle("/metrics", promhttp.Handler())

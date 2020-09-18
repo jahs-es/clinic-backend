@@ -14,6 +14,7 @@ func NewFixtureUser() *model.User {
 		Password:  "123456",
 		Name:      "Jahs",
 		Rol:       "admin",
+		Active:    true,
 		CreatedAt: time.Now(),
 	}
 }
@@ -25,6 +26,16 @@ func NewFixturePatient() *model.Patient {
 		Address:   "Avda jahs",
 		Email:     "jahs.es@gmail.com",
 		Phone:     "965845487",
+		Active:    true,
+		CreatedAt: time.Now(),
+	}
+}
+
+func NewFixtureTreatment() *model.Treatment {
+	return &model.Treatment{
+		ID:        entity.NewID(),
+		Name:      "Treatment 1",
+		Active:    true,
 		CreatedAt: time.Now(),
 	}
 }
