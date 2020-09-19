@@ -1,0 +1,1 @@
+drop constraint patient_treatment_patient_FK;
