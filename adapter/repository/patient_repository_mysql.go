@@ -9,19 +9,16 @@ import (
 	"time"
 )
 
-//MySQLPatientRepo mysql repo
 type MySQLPatientRepo struct {
 	db *sql.DB
 }
 
-//NewMySQLUserRepository create new repository
 func NewMySQLPatientRepository(db *sql.DB) *MySQLPatientRepo {
 	return &MySQLPatientRepo{
 		db: db,
 	}
 }
 
-//Create an user
 func (r *MySQLPatientRepo) Create(e *model.Patient) (entity2.ID, error) {
 	stmt, err := r.db.Prepare(`
 		insert into patient (id, name, address, email, phone, created_at, created_by) 
@@ -48,7 +45,6 @@ func (r *MySQLPatientRepo) Create(e *model.Patient) (entity2.ID, error) {
 	return e.ID, nil
 }
 
-//Get an user
 func (r *MySQLPatientRepo) Get(id entity2.ID) (*model.Patient, error) {
 	stmt, err := r.db.Prepare(`select id, name, address, email, phone, active from patient where id = ?`)
 	if err != nil {
@@ -70,7 +66,6 @@ func (r *MySQLPatientRepo) Get(id entity2.ID) (*model.Patient, error) {
 	}
 }
 
-//Get an user by email
 func (r *MySQLPatientRepo) GetByEmail(email string) (*model.Patient, error) {
 	stmt, err := r.db.Prepare(`select id, email from patient where email = ?`)
 	if err != nil {
@@ -101,7 +96,6 @@ func (r *MySQLPatientRepo) Update(e *model.Patient) error {
 	return nil
 }
 
-//Search patients
 func (r *MySQLPatientRepo) Search(e *model.Patient) ([]*model.Patient, error) {
 	sql := "select id, email, name, rol, active from patient where "
 	sql += getExpresion("name", e.Name)
@@ -131,7 +125,6 @@ func (r *MySQLPatientRepo) Search(e *model.Patient) ([]*model.Patient, error) {
 	return patients, nil
 }
 
-//Delete an patient
 func (r *MySQLPatientRepo) Delete(id entity2.ID) error {
 	_, err := r.db.Exec("delete from patient where id = ?", id)
 	if err != nil {

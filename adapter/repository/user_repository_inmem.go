@@ -7,12 +7,10 @@ import (
 	"github.com/jahs/clinic-backend/usecase/exception"
 )
 
-//IRepo in memory repo
 type IUserRepo struct {
 	m map[entity2.ID]*model.User
 }
 
-//NewInmemUserRepository create new repository
 func NewInmemUserRepository() *IUserRepo {
 	var m = map[entity2.ID]*model.User{}
 	return &IUserRepo{
@@ -20,13 +18,11 @@ func NewInmemUserRepository() *IUserRepo {
 	}
 }
 
-//Create an user
 func (r *IUserRepo) Create(e *model.User) (entity2.ID, error) {
 	r.m[e.ID] = e
 	return e.ID, nil
 }
 
-//Get an user
 func (r *IUserRepo) Get(id entity2.ID) (*model.User, error) {
 	if r.m[id] == nil {
 		return nil, exception.ErrNotFound
@@ -34,7 +30,6 @@ func (r *IUserRepo) Get(id entity2.ID) (*model.User, error) {
 	return r.m[id], nil
 }
 
-//Get an user by email
 func (r *IUserRepo) GetByEmail(email string) (*model.User, error) {
 	var d *model.User
 
@@ -47,7 +42,6 @@ func (r *IUserRepo) GetByEmail(email string) (*model.User, error) {
 	return d, nil
 }
 
-//Update an user
 func (r *IUserRepo) Update(e *model.User) error {
 	_, err := r.Get(e.ID)
 	if err != nil {
@@ -57,7 +51,6 @@ func (r *IUserRepo) Update(e *model.User) error {
 	return nil
 }
 
-//Search users
 func (r *IUserRepo) Search(e *model.User) ([]*model.User, error) {
 	var d []*model.User
 
@@ -66,7 +59,6 @@ func (r *IUserRepo) Search(e *model.User) ([]*model.User, error) {
 	return d, nil
 }
 
-//Delete an user
 func (r *IUserRepo) Delete(id entity2.ID) error {
 	if r.m[id] == nil {
 		return exception.ErrNotFound

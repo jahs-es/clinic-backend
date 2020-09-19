@@ -9,19 +9,16 @@ import (
 	"time"
 )
 
-//MySQLUserRepo mysql repo
 type MySQLUserRepo struct {
 	db *sql.DB
 }
 
-//NewMySQLUserRepository create new repository
 func NewMySQLUserRepository(db *sql.DB) *MySQLUserRepo {
 	return &MySQLUserRepo{
 		db: db,
 	}
 }
 
-//Create an user
 func (r *MySQLUserRepo) Create(e *model.User) (entity2.ID, error) {
 	stmt, err := r.db.Prepare(`
 		insert into user (id, email, password, name, rol, created_at) 
@@ -47,7 +44,6 @@ func (r *MySQLUserRepo) Create(e *model.User) (entity2.ID, error) {
 	return e.ID, nil
 }
 
-//Get an user
 func (r *MySQLUserRepo) Get(id entity2.ID) (*model.User, error) {
 	stmt, err := r.db.Prepare(`select id, email, name, rol, active from user where id = ?`)
 	if err != nil {
@@ -69,7 +65,6 @@ func (r *MySQLUserRepo) Get(id entity2.ID) (*model.User, error) {
 	}
 }
 
-//Get an user by email
 func (r *MySQLUserRepo) GetByEmail(email string) (*model.User, error) {
 	stmt, err := r.db.Prepare(`select id, password, email from user where email = ?`)
 	if err != nil {
@@ -108,7 +103,6 @@ func getExpresion(column string, value string) string {
 	}
 }
 
-//Search users
 func (r *MySQLUserRepo) Search(e *model.User) ([]*model.User, error) {
 	sql := "select id, email, name, rol, active from user where "
 	sql += getExpresion("name", e.Name)
@@ -138,7 +132,6 @@ func (r *MySQLUserRepo) Search(e *model.User) ([]*model.User, error) {
 	return users, nil
 }
 
-//Delete an user
 func (r *MySQLUserRepo) Delete(id entity2.ID) error {
 	_, err := r.db.Exec("delete from user where id = ?", id)
 	if err != nil {

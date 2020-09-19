@@ -9,19 +9,16 @@ import (
 	"time"
 )
 
-//MySQLTreatmentRepo mysql repo
 type MySQLTreatmentRepo struct {
 	db *sql.DB
 }
 
-//NewMySQLUserRepository create new repository
 func NewMySQLTreatmentRepository(db *sql.DB) *MySQLTreatmentRepo {
 	return &MySQLTreatmentRepo{
 		db: db,
 	}
 }
 
-//Create an user
 func (r *MySQLTreatmentRepo) Create(e *model.Treatment) (entity2.ID, error) {
 	stmt, err := r.db.Prepare(`
 		insert into treatment (id, name, created_at, created_by) 
@@ -45,7 +42,6 @@ func (r *MySQLTreatmentRepo) Create(e *model.Treatment) (entity2.ID, error) {
 	return e.ID, nil
 }
 
-//Get an user
 func (r *MySQLTreatmentRepo) Get(id entity2.ID) (*model.Treatment, error) {
 	stmt, err := r.db.Prepare(`select id, name, active from treatment where id = ?`)
 	if err != nil {
@@ -67,7 +63,6 @@ func (r *MySQLTreatmentRepo) Get(id entity2.ID) (*model.Treatment, error) {
 	}
 }
 
-//Get an user by email
 func (r *MySQLTreatmentRepo) GetByName(name string) (*model.Treatment, error) {
 	stmt, err := r.db.Prepare(`select id, name from treatment where name = ?`)
 	if err != nil {
@@ -98,7 +93,6 @@ func (r *MySQLTreatmentRepo) Update(e *model.Treatment) error {
 	return nil
 }
 
-//Search patients
 func (r *MySQLTreatmentRepo) Search(e *model.Treatment) ([]*model.Treatment, error) {
 	sql := "select id, name, active from treatment where "
 	sql += getExpresion("name", e.Name)
@@ -126,7 +120,6 @@ func (r *MySQLTreatmentRepo) Search(e *model.Treatment) ([]*model.Treatment, err
 	return patients, nil
 }
 
-//Delete an patient
 func (r *MySQLTreatmentRepo) Delete(id entity2.ID) error {
 	_, err := r.db.Exec("delete from treatment where id = ?", id)
 	if err != nil {

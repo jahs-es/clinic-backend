@@ -7,7 +7,6 @@ import (
 	"github.com/jahs/clinic-backend/usecase/exception"
 )
 
-//ITreatmentRepo in memory repo
 type ITreatmentRepo struct {
 	m map[entity2.ID]*model.Treatment
 }
@@ -19,13 +18,11 @@ func NewInmemTreatmentRepository() *ITreatmentRepo {
 	}
 }
 
-//Create an user
 func (r *ITreatmentRepo) Create(e *model.Treatment) (entity2.ID, error) {
 	r.m[e.ID] = e
 	return e.ID, nil
 }
 
-//Get an user
 func (r *ITreatmentRepo) Get(id entity2.ID) (*model.Treatment, error) {
 	if r.m[id] == nil {
 		return nil, exception.ErrNotFound
@@ -33,7 +30,6 @@ func (r *ITreatmentRepo) Get(id entity2.ID) (*model.Treatment, error) {
 	return r.m[id], nil
 }
 
-//Get an user by email
 func (r *ITreatmentRepo) GetByName(name string) (*model.Treatment, error) {
 	var d *model.Treatment
 
@@ -46,7 +42,6 @@ func (r *ITreatmentRepo) GetByName(name string) (*model.Treatment, error) {
 	return d, nil
 }
 
-//Update an user
 func (r *ITreatmentRepo) Update(e *model.Treatment) error {
 	_, err := r.Get(e.ID)
 	if err != nil {
@@ -56,7 +51,6 @@ func (r *ITreatmentRepo) Update(e *model.Treatment) error {
 	return nil
 }
 
-//Search users
 func (r *ITreatmentRepo) Search(e *model.Treatment) ([]*model.Treatment, error) {
 	var d []*model.Treatment
 
@@ -65,7 +59,6 @@ func (r *ITreatmentRepo) Search(e *model.Treatment) ([]*model.Treatment, error) 
 	return d, nil
 }
 
-//Delete an user
 func (r *ITreatmentRepo) Delete(id entity2.ID) error {
 	if r.m[id] == nil {
 		return exception.ErrNotFound
