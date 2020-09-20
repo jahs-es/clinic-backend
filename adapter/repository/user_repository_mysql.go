@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	entity2 "github.com/jahs/clinic-backend/adapter/entity"
 	"github.com/jahs/clinic-backend/domain/model"
 	"github.com/jahs/clinic-backend/usecase/exception"
@@ -111,14 +110,13 @@ func (r *MySQLUserRepo) Search(e *model.User) ([]*model.User, error) {
 
 	sql = sql[0:len(sql) - 3]
 
-	fmt.Println(sql)
-
 	rows, err := r.db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
 
 	var users []*model.User
+
 	for rows.Next() {
 		user := new(model.User)
 

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	entity2 "github.com/jahs/clinic-backend/adapter/entity"
 	"github.com/jahs/clinic-backend/domain/model"
 	"github.com/jahs/clinic-backend/usecase/exception"
@@ -97,14 +96,12 @@ func (r *MySQLPatientRepo) Update(e *model.Patient) error {
 }
 
 func (r *MySQLPatientRepo) Search(e *model.Patient) ([]*model.Patient, error) {
-	sql := "select id, email, name, rol, active from patient where "
+	sql := "select id, name, address, email, phone, active from patient where "
 	sql += getExpresion("name", e.Name)
 	sql += getExpresion("email", e.Email)
 	sql += getExpresion("address", e.Address)
 
 	sql = sql[0:len(sql) - 3]
-
-	fmt.Println(sql)
 
 	rows, err := r.db.Query(sql)
 	if err != nil {
@@ -112,6 +109,7 @@ func (r *MySQLPatientRepo) Search(e *model.Patient) ([]*model.Patient, error) {
 	}
 
 	var patients []*model.Patient
+
 	for rows.Next() {
 		u := new(model.Patient)
 
@@ -122,6 +120,7 @@ func (r *MySQLPatientRepo) Search(e *model.Patient) ([]*model.Patient, error) {
 
 		patients = append(patients, u)
 	}
+
 	return patients, nil
 }
 

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	entity2 "github.com/jahs/clinic-backend/adapter/entity"
 	"github.com/jahs/clinic-backend/domain/model"
 	"github.com/jahs/clinic-backend/usecase/exception"
@@ -99,14 +98,13 @@ func (r *MySQLTreatmentRepo) Search(e *model.Treatment) ([]*model.Treatment, err
 
 	sql = sql[0:len(sql) - 3]
 
-	fmt.Println(sql)
-
 	rows, err := r.db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
 
-	var patients []*model.Treatment
+	var treatments []*model.Treatment
+
 	for rows.Next() {
 		u := new(model.Treatment)
 
@@ -115,9 +113,9 @@ func (r *MySQLTreatmentRepo) Search(e *model.Treatment) ([]*model.Treatment, err
 			return nil, err
 		}
 
-		patients = append(patients, u)
+		treatments = append(treatments, u)
 	}
-	return patients, nil
+	return treatments, nil
 }
 
 func (r *MySQLTreatmentRepo) Delete(id entity2.ID) error {
