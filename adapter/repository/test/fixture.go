@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/jahs/clinic-backend/adapter/entity"
+	"github.com/jahs/clinic-backend/adapter/presenter"
 	"time"
 
 	"github.com/jahs/clinic-backend/domain/model"
@@ -37,5 +38,16 @@ func NewFixtureTreatment() *model.Treatment {
 		Name:      "Treatment 1",
 		Active:    true,
 		CreatedAt: time.Now(),
+	}
+}
+
+func NewFixturePatientTreatment() *presenter.PatientTreatmentDTO {
+	return &presenter.PatientTreatmentDTO{
+		ID:          entity.NewID(),
+		PatientId:   entity.NewID(),
+		Patient:     "Paciente",
+		TreatmentId: entity.NewID(),
+		Treatment:   "Tratamiento",
+		Active:      true,
 	}
 }

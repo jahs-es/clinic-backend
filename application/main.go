@@ -32,6 +32,7 @@ func main() {
 	userRegistry := registry.NewUserRegistry(db)
 	patientRegistry := registry.NewPatientRegistry(db)
 	treatmentRegistry := registry.NewTreatmentRegistry(db)
+	patientTreatmentRegistry := registry.NewPatientTreatmentRegistry(db)
 
 	metricService, err := metric.NewPrometheusService()
 	if err != nil {
@@ -41,31 +42,34 @@ func main() {
 	r := mux.NewRouter()
 
 	//handlers with security
-	notSecuredHandler := negroni.New(
+	securedHandler := negroni.New(
 		negroni.HandlerFunc(middleware.Cors),
-		negroni.HandlerFunc(middleware.Authentication),
+		//negroni.HandlerFunc(middleware.Authentication),
 		negroni.HandlerFunc(middleware.Metrics(metricService)),
 		negroni.NewLogger(),
 	)
 
 	//handlers not secured
-	securedHandler := negroni.New(
+	notSecuredHandler := negroni.New(
 		negroni.HandlerFunc(middleware.Cors),
 		negroni.HandlerFunc(middleware.Metrics(metricService)),
 		negroni.NewLogger(),
 	)
 
 	//login
-	controller.MakeLoginHandlers(r, *securedHandler, userRegistry.NewUserController())
+	controller.MakeLoginHandlers(r, *notSecuredHandler, userRegistry.NewUserController())
 
 	//user
-	controller.MakeUserHandlers(r, *notSecuredHandler, userRegistry.NewUserController())
+	controller.MakeUserHandlers(r, *securedHandler, userRegistry.NewUserController())
 
 	//patient
-	controller.MakePatientHandlers(r, *notSecuredHandler, patientRegistry.NewPatientController())
+	controller.MakePatientHandlers(r, *securedHandler, patientRegistry.NewPatientController())
 
 	//treatment
-	controller.MakeTreatmentHandlers(r, *notSecuredHandler, treatmentRegistry.NewTreatmentController())
+	controller.MakeTreatmentHandlers(r, *securedHandler, treatmentRegistry.NewTreatmentController())
+
+	//patient
+	controller.MakePatientTreatmentHandlers(r, *securedHandler, patientTreatmentRegistry.NewPatientTreatmentController())
 
 	http.Handle("/", r)
 	http.Handle("/metrics", promhttp.Handler())
