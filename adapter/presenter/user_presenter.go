@@ -16,7 +16,8 @@ func NewUserPresenter() UserPresenter {
 }
 
 func (up *userPresenter) Response(us []*model.User) []*UserDTO {
-	var userDTOList []*UserDTO
+	userDTOList := make([]*UserDTO, 0)
+
 	for _, d := range us {
 		userDTOList = append(userDTOList, &UserDTO{
 			ID:     d.ID,

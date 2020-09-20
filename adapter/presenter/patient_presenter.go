@@ -16,7 +16,8 @@ func NewPatientPresenter() PatientPresenter {
 }
 
 func (up *patientPresenter) Response(us []*model.Patient) []*PatientDTO {
-	var patientDTOList []*PatientDTO
+	patientDTOList := make([]*PatientDTO,0)
+
 	for _, d := range us {
 		patientDTOList = append(patientDTOList, &PatientDTO{
 			ID:      d.ID,
