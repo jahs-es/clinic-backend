@@ -58,11 +58,6 @@ func (uc *treatmentController) Find() http.Handler {
 			return
 		}
 
-		if data == nil {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte(errorMessage))
-			return
-		}
 		if err := json.NewEncoder(w).Encode(data); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(errorMessage))

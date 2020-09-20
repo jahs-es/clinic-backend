@@ -36,7 +36,7 @@ func (uc *patientController) Find() http.Handler {
 		var input struct {
 			Email   string `json:"email"`
 			Name    string `json:"name"`
-			Address string `json:"rol"`
+			Address string `json:"address"`
 		}
 
 		err := json.NewDecoder(r.Body).Decode(&input)
@@ -62,11 +62,6 @@ func (uc *patientController) Find() http.Handler {
 			return
 		}
 
-		if data == nil {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte(errorMessage))
-			return
-		}
 		if err := json.NewEncoder(w).Encode(data); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(errorMessage))
