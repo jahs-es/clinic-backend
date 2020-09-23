@@ -21,7 +21,7 @@ type userInteractor struct {
 }
 
 type UserInteractor interface {
-	Login(email string, password string) (string, error)
+	Login(email string, password string) (*presenterDTO.Token, error)
 	Create(e *model.User) (entity.ID, error)
 	Get(id entity.ID) (*presenterDTO.UserDTO, error)
 	Delete(id entity.ID) error
@@ -32,11 +32,11 @@ func NewUserInteractor(r repository.UserRepository, p presenter.UserPresenter, s
 	return &userInteractor{r, p, s, v}
 }
 
-func (us *userInteractor) Login(email string, password string) (string, error) {
+func (us *userInteractor) Login(email string, password string) (*presenterDTO.Token, error) {
 	data, err := us.UserRepository.GetByEmail(email)
 
 	if data == nil {
-		return "", err
+		return nil, err
 	}
 
 	toJ := &model.User{
@@ -47,12 +47,16 @@ func (us *userInteractor) Login(email string, password string) (string, error) {
 	err = us.Service.Compare(toJ.Password, password)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	token, err := auth.CreateToken(toJ.ID)
 
-	return token, err
+	tokenDTO := &presenterDTO.Token{
+		AccessToken: token,
+	}
+
+	return tokenDTO, err
 }
 
 func (us *userInteractor) Create(e *model.User) (entity.ID, error) {
