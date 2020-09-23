@@ -33,24 +33,15 @@ func NewPatientTreatmentController(us interactor.PatientTreatmentInteractor) *pa
 func (uc *patientTreatmentController) Find() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error reading patientTreatments"
-		var input struct {
-			Detail    string `json:"detail"`
-			Patient   string `json:"patient"`
-			Treatment string `json:"treatment"`
-		}
 
-		err := json.NewDecoder(r.Body).Decode(&input)
-		if err != nil {
-			log.Println(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
-			return
-		}
-		//TODO: validate data ;)
+		detail := r.URL.Query().Get("detail")
+		patient := r.URL.Query().Get("name")
+		treatment := r.URL.Query().Get("rol")
+
 		u := &presenterDTO.PatientTreatmentDTO{
-			Detail:    input.Detail,
-			Patient:   input.Patient,
-			Treatment: input.Treatment,
+			Detail:    detail,
+			Patient:   patient,
+			Treatment: treatment,
 		}
 
 		data, err := uc.patientTreatmentInteractor.Find(u)

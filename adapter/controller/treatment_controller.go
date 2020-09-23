@@ -33,20 +33,11 @@ func NewTreatmentController(us interactor.TreatmentInteractor) *treatmentControl
 func (uc *treatmentController) Find() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error reading treatments"
-		var input struct {
-			Name    string `json:"name"`
-		}
 
-		err := json.NewDecoder(r.Body).Decode(&input)
-		if err != nil {
-			log.Println(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
-			return
-		}
-		//TODO: validate data ;)
+		name := r.URL.Query().Get("name")
+
 		u := &model.Treatment{
-			Name:    input.Name,
+			Name:    name,
 		}
 
 		data, err := uc.treatmentInteractor.Find(u)

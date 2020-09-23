@@ -32,25 +32,16 @@ func NewPatientController(us interactor.PatientInteractor) *patientController {
 
 func (uc *patientController) Find() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		errorMessage := "Error reading patients"
-		var input struct {
-			Email   string `json:"email"`
-			Name    string `json:"name"`
-			Address string `json:"address"`
-		}
+		//errorMessage := "Error reading patients"
 
-		err := json.NewDecoder(r.Body).Decode(&input)
-		if err != nil {
-			log.Println(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
-			return
-		}
-		//TODO: validate data ;)
+		email := r.URL.Query().Get("email")
+		name := r.URL.Query().Get("name")
+		address := r.URL.Query().Get("address")
+
 		u := &model.Patient{
-			Email:   input.Email,
-			Name:    input.Name,
-			Address: input.Address,
+			Email:   email,
+			Name:    name,
+			Address: address,
 		}
 
 		data, err := uc.patientInteractor.Find(u)
@@ -64,7 +55,7 @@ func (uc *patientController) Find() http.Handler {
 
 		if err := json.NewEncoder(w).Encode(data); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
+			w.Write([]byte(err.Error()))
 		}
 	})
 }

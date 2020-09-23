@@ -45,7 +45,7 @@ func (uc *userController) Login() http.Handler {
 			return
 		}
 
-		token, err := uc.userInteractor.Login(input.Email, input.Password)
+		tokenDTO, err := uc.userInteractor.Login(input.Email, input.Password)
 
 		if err != nil {
 			log.Println(err.Error())
@@ -54,7 +54,7 @@ func (uc *userController) Login() http.Handler {
 			return
 		}
 
-		if err := json.NewEncoder(w).Encode(token); err != nil {
+		if err := json.NewEncoder(w).Encode(tokenDTO); err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte(errorMessage))
 		}
@@ -64,24 +64,15 @@ func (uc *userController) Login() http.Handler {
 func (uc *userController) Find() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		errorMessage := "Error reading users"
-		var input struct {
-			Email string `json:"email"`
-			Name  string `json:"name"`
-			Rol   string `json:"rol"`
-		}
 
-		err := json.NewDecoder(r.Body).Decode(&input)
-		if err != nil {
-			log.Println(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
-			return
-		}
-		//TODO: validate data ;)
+		email := r.URL.Query().Get("email")
+		name := r.URL.Query().Get("name")
+		rol := r.URL.Query().Get("rol")
+
 		u := &model.User{
-			Email: input.Email,
-			Name:  input.Name,
-			Rol:   input.Rol,
+			Email: email,
+			Name:  name,
+			Rol:   rol,
 		}
 
 		data, err := uc.userInteractor.Find(u)
