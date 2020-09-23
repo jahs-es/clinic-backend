@@ -44,7 +44,7 @@ func main() {
 	//handlers with security
 	securedHandler := negroni.New(
 		negroni.HandlerFunc(middleware.Cors),
-		//negroni.HandlerFunc(middleware.Authentication),
+		negroni.HandlerFunc(middleware.Authentication),
 		negroni.HandlerFunc(middleware.Metrics(metricService)),
 		negroni.NewLogger(),
 	)
