@@ -15,12 +15,14 @@ clean:
 dependencies:
 	go mod download
 
-#build: dependencies build-api build-cmd
-
 build: dependencies build-api
 
 build-api: 
-	go build -tags $(LIBRARY_ENV) -o ./bin/api application/main.go
+	go build -tags $(LIBRARY_ENV) -o ./bin/api src/application/main.go
+
+build-api-prod:
+	go build -tags prod -o ./bin/api src/application/main.go
+
 
 linux-binaries:
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -tags "$(LIBRARY_ENV) netgo" -installsuffix netgo -o $(BIN_DIR)/api api/main.go

@@ -2,6 +2,7 @@ create table patient
 (
 id varchar(36),
 name varchar(150) not null,
+avatar_path varchar(200) null,
 address varchar(200),
 email varchar(50),
 phone varchar(50) not null,
