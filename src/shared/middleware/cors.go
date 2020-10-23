@@ -4,7 +4,6 @@ import (
 	"net/http"
 )
 
-//Cors adiciona os headers para suportar o CORS nos navegadores
 func Cors(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS")

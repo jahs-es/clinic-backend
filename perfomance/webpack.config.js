@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 module.exports = {
     mode: "production",
-    entry: './script.js',
+    entry: './scripts/scenario_01.js',
     output: {
         path: path.resolve(__dirname, 'build'),
         libraryTarget: "commonjs",
