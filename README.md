@@ -16,6 +16,8 @@ An clinic api created using Go following a clean code architecture approach.
 
 - To test endpoints firstly call login endpoint with valid user and grab token in order to include it as bearer token in securized endpoints calls.
 
+Front can be found in this [repo](https://github.com/jahs-es/clinic_front).
+
 ## Build for development
 
   make
@@ -35,3 +37,9 @@ An clinic api created using Go following a clean code architecture approach.
 ## Launch docker compose with database, graphana and prometheus
 
   make launch-docker
+
+## Soon
+
+  - Send email when sign up or user recovery password.
+  - Log actions done.
+  - Kubernetes deployments.
