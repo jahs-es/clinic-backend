@@ -1,5 +1,6 @@
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';
+import uuid from "uuid"
 
 export let options = {
     thresholds: {
@@ -34,7 +35,7 @@ const SLEEP_DURATION = 0.1;
 export function setup() {
     // Login
     let body = JSON.stringify({
-        email: 'jahs.es@gmail.com',
+        email: 'admin@gmail.com',
         password: 'admin',
     });
     let params = {
@@ -50,10 +51,10 @@ export function setup() {
 
     check(login_response, {
         'is status 200': (r) => r.status === 200,
-        'is token present': (r) => login_response.json('AccessToken') !== '',
+        'is token present': (r) => login_response.json('token') !== '',
     });
 
-    let authToken = login_response.json('AccessToken');
+    let authToken = login_response.json('token');
 
     return authToken;
 }
@@ -83,6 +84,7 @@ export function insert_patients(authToken) {
 
     group("Insert patients", function () {
         let bodyInsert = JSON.stringify({
+            "id": uuid.v1(),
             "name": `Name${getRandomNumber()}`,
             "address": `Address${getRandomNumber()}`,
             "email": `mail${getRandomNumber()}@gmail.com`,

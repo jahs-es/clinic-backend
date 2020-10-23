@@ -15,7 +15,7 @@ const SLEEP_DURATION = 0.1;
 export default function () {
     group("Get patient list", function () {
         let body = JSON.stringify({
-            email: 'jahs3@gmail.com',
+            email: 'admin@gmail.com',
             password: 'admin',
         });
         let params = {
@@ -30,10 +30,10 @@ export default function () {
         let login_response = http.post('http://localhost:8080/v1/login', body, params);
         check(login_response, {
             'is status 200': (r) => r.status === 200,
-            'is token present': (r) => login_response.json('AccessToken') !== '',
+            'is token present': (r) => login_response.json('token') !== '',
         });
 
-        params.headers['authorization'] = `Bearer ${login_response.json('AccessToken')}`
+        params.headers['authorization'] = `Bearer ${login_response.json('token')}`
         params.tags['name'] = 'Get user list'
 
         sleep(SLEEP_DURATION);
