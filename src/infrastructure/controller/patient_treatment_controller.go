@@ -20,6 +20,7 @@ type patientTreatmentController struct {
 
 type PatientTreatmentController interface {
 	Find() http.Handler
+	FindByPatientID() http.Handler
 	Get() http.Handler
 	Create() http.Handler
 	Update() http.Handler
@@ -45,6 +46,34 @@ func (uc *patientTreatmentController) Find() http.Handler {
 		}
 
 		data, err := uc.patientTreatmentInteractor.Find(u)
+
+		w.Header().Set("Content-Type", "application/json")
+		if err != nil && err != exception.ErrNotFound {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(errorMessage))
+		}
+	})
+}
+
+func (uc *patientTreatmentController) FindByPatientID() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		errorMessage := "Error reading patientTreatments by patient"
+
+		vars := mux.Vars(r)
+		patientID, err := entity.StringToID(vars["patient-id"])
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(errorMessage))
+			return
+		}
+
+		data, err := uc.patientTreatmentInteractor.FindByPatientID(patientID)
 
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil && err != exception.ErrNotFound {

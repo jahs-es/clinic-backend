@@ -25,6 +25,7 @@ type IPatientTreatmentUseCase interface {
 	Get(id entity.ID) (*dto.PatientTreatmentDTO, error)
 	Delete(id entity.ID) error
 	Find(e *dto.PatientTreatmentDTO) ([]*dto.PatientTreatmentDTO, error)
+	FindByPatientID(patientId entity.ID) ([]*dto.PatientTreatmentDTO, error)
 }
 
 func NewPatientTreatmentInteractor(r _interface.IPatientTreatmentRepository, p presenter2.IPatientTreatmentPresenter, s password.Service, v service.PatientTreatmentValidator) *patientTreatmentUseCase {
@@ -71,6 +72,15 @@ func (us *patientTreatmentUseCase) Delete(id entity.ID) error {
 
 func (us *patientTreatmentUseCase) Find(e *dto.PatientTreatmentDTO) ([]*dto.PatientTreatmentDTO, error) {
 	u, err := us.PatientTreatmentRepository.Search(e)
+
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+func (us *patientTreatmentUseCase) FindByPatientID(patientID entity.ID) ([]*dto.PatientTreatmentDTO, error) {
+	u, err := us.PatientTreatmentRepository.FindByPatientId(patientID)
 
 	if err != nil {
 		return nil, err

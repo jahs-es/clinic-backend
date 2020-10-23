@@ -106,6 +106,32 @@ func (r *MySQLPatientTreatmentRepo) Search(e *dto.PatientTreatmentDTO) ([]*dto.P
 	return patient_treatments, nil
 }
 
+func (r *MySQLPatientTreatmentRepo) FindByPatientId(patientID entity2.ID) ([]*dto.PatientTreatmentDTO, error) {
+	sql := "select pt.id, patient_id, treatment_id, pt.detail, pt.active, p.name, t.name "
+	sql += "from patient_treatment pt inner join patient p on pt.patient_id = p.id "
+	sql += "inner join treatment t on pt.treatment_id = t.id where pt.patient_id = '" + patientID.String() + "'"
+
+	rows, err := r.db.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+
+	patient_treatments := make([]*dto.PatientTreatmentDTO, 0)
+
+	for rows.Next() {
+		u := new(dto.PatientTreatmentDTO)
+
+		err = rows.Scan(&u.ID, &u.PatientId, &u.TreatmentId, &u.Detail, &u.Active, &u.Patient, &u.Treatment)
+		if err != nil {
+			return nil, err
+		}
+
+		patient_treatments = append(patient_treatments, u)
+	}
+
+	return patient_treatments, nil
+}
+
 func (r *MySQLPatientTreatmentRepo) Delete(id entity2.ID) error {
 	_, err := r.db.Exec("delete from patient_treatment where id = ?", id)
 	if err != nil {
