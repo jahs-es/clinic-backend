@@ -1,0 +1,3 @@
+DELETE FROM user WHERE id = 'b5d134cc-12cc-46a8-bc48-64e8f2520026'
+
+
