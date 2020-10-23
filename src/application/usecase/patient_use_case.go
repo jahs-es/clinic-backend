@@ -63,6 +63,7 @@ func (us *patientUseCase) Get(id entity.ID) (*dto.PatientDTO, error) {
 		Address: u.Address,
 		Phone:   u.Phone,
 		Active:  u.Active,
+		AvatarPath: u.AvatarPath,
 	}, nil
 }
 
