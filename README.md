@@ -16,9 +16,11 @@ An clinic api created using Go following a clean code architecture approach.
 
 - To test endpoints firstly call login endpoint with valid user and grab token in order to include it as bearer token in securized endpoints calls.
 
+- Api is exposed in 3001 port.
+
 Front can be found in this [repo](https://github.com/jahs-es/clinic_front).
 
-## Build for development
+## Build for development (check config files)
 
   make
 
@@ -30,7 +32,7 @@ Front can be found in this [repo](https://github.com/jahs-es/clinic_front).
 
   make test
 
-## Creates docker
+## Creates docker (uses docker config)
 
   make generate-docker
 
@@ -41,5 +43,5 @@ Front can be found in this [repo](https://github.com/jahs-es/clinic_front).
 ## Soon
 
   - Send email when sign up or user recovery password.
-  - Log actions done.
+  - Log done actions.
   - Kubernetes deployments.
