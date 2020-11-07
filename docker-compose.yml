@@ -1,65 +1,7 @@
-version: "3"
+version: '3'
 services:
-  app:
-    image: jahs/clinic-api:latest
-    container_name: clinic_api
+  clinic-backend:
+    build: .
+    image: jahs/clinic-backend:$TAG
     ports:
-      - 8080:8080
-    restart: on-failure
-#    volumes:
-#      - api:/usr/src/app/
-    depends_on:
-      - mysql
-    networks:
-      - clinic_api_network
-
-  mysql:
-    image: mysql:5.7
-    command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql
-    volumes:
-      - ./infrastructure/init.sql:/data/application/init.sql
-    environment:
-      MYSQL_ROOT_PASSWORD: root001
-      MYSQL_DATABASE: clinic
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root001
-    ports:
-      - "3306:3306"
-    container_name: clinic-backend-mysql
-    networks:
-      - clinic_api_network
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    container_name: clinic-backend-grafana
-    networks:
-      - clinic_api_network
-    depends_on:
-      - prometheus
-      - prometheus-pushgateway
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - 9090:9090
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    volumes:
-      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    container_name: clinic-backend-prometheus
-    networks:
-      - clinic_api_network
-  prometheus-pushgateway:
-    image: prom/pushgateway
-    container_name: clinic-backend-pushgateway
-    expose:
-      - 9091
-    ports:
-      - "9091:9091"
-    networks:
-      - clinic_api_network
-
-# Networks to be created to facilitate communication between containers
-networks:
-  clinic_api_network:
-    driver: bridge
+      - "3001:3001"

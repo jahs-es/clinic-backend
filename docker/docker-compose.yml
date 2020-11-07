@@ -1,0 +1,64 @@
+version: "3"
+services:
+  backend:
+    image: jahs/clinic-backend:$TAG
+    container_name: clinic-backend
+    ports:
+      - 3001:3001
+    restart: on-failure
+    depends_on:
+      - mysql
+    networks:
+      - backend-network
+
+  mysql:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql
+    volumes:
+      - ./database/init.sql:/data/application/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root001
+      MYSQL_DATABASE: clinic
+      MYSQL_PASSWORD: root001
+    ports:
+      - "3306:3306"
+    container_name: clinic-backend-mysql
+    networks:
+      - backend-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    container_name: clinic-backend-grafana
+    networks:
+      - backend-network
+    depends_on:
+      - prometheus
+      - prometheus-pushgateway
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    container_name: clinic-backend-prometheus
+    networks:
+      - backend-network
+
+  prometheus-pushgateway:
+    image: prom/pushgateway
+    container_name: clinic-backend-pushgateway
+    expose:
+      - 9091
+    ports:
+      - "9091:9091"
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge

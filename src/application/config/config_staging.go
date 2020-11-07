@@ -7,6 +7,6 @@ const (
 	DB_PASSWORD            = "root001"
 	DB_DATABASE            = "clinic"
 	DB_HOST                = "127.0.0.1"
-	API_PORT               = 8080
+	API_PORT               = 3001
 	PROMETHEUS_PUSHGATEWAY = "http://localhost:9091/"
 )

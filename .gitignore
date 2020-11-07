@@ -8,4 +8,5 @@ go.mod
 perfomance/node_modules
 perfomance/build
 perfomance/package-lock.json
+perfomance/yarn.lock
 

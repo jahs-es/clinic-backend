@@ -1,0 +1,49 @@
+name: Clinic Backend
+
+on:
+  push:
+    branches:
+      - main
+      - development
+    tags:
+      - 'v*'
+    paths:
+      - '**'
+      - '.github/workflows/backend.yaml'
+  pull_request:
+    branches:
+      - main
+      - development
+    paths:
+      - '**'
+      - '.github/workflows/backend.yaml'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Getting source code
+        uses: actions/checkout@v1
+
+      - name: Test
+        run: make test
+
+      - if: contains(github.ref, 'tags')
+        name: Getting tag name
+        uses: olegtarasov/get-tag@v1
+        id: tagName
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_AUTH_TOKEN }}
+
+      - name: Docker build & push
+        if: contains(github.ref, 'tags')
+        env:
+          DOCKER_TAG: ${{ steps.tagName.outputs.tag }}
+        run: |
+          TAG=$DOCKER_TAG docker-compose build
+          docker push jahs/clinic-backend:$DOCKER_TAG

@@ -2,6 +2,8 @@ import http from 'k6/http';
 import { check, sleep, group } from 'k6';
 import uuid from "uuid"
 
+const API_URL = 'http://localhost:3001/api'
+
 export let options = {
     thresholds: {
         'failed requests': ['rate<0.1'],
@@ -47,7 +49,7 @@ export function setup() {
         },
     };
 
-    let login_response = http.post('http://localhost:8080/v1/login', body, params);
+    let login_response = http.post(`${API_URL}/v1/login`, body, params);
 
     check(login_response, {
         'is status 200': (r) => r.status === 200,
@@ -66,7 +68,7 @@ export function search_patients(authToken) {
     };
 
     group("Search patients", function () {
-        let get_patients_response = http.get(`http://localhost:8080/v1/patient?name=Name${getRandomNumber()}&email=mail${getRandomNumber()}&address=Address${getRandomNumber()}`, params);
+        let get_patients_response = http.get(`${API_URL}/v1/patient?name=Name${getRandomNumber()}&email=mail${getRandomNumber()}&address=Address${getRandomNumber()}`, params);
 
         check(get_patients_response, {
             'is status 200': (r) => r.status === 200
@@ -91,7 +93,7 @@ export function insert_patients(authToken) {
             "phone": `968${getRandomNumber()}`
         });
 
-        let post_patients_response = http.post('http://localhost:8080/v1/patient', bodyInsert, params);
+        let post_patients_response = http.post(`${API_URL}/v1/patient`, bodyInsert, params);
 
         check(post_patients_response, {
             'is status 201': (r) => r.status === 201
