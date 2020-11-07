@@ -23,6 +23,8 @@ build-api:
 build-api-prod:
 	go build -tags prod -o ./bin/api src/application/main.go
 
+centos-api-prod:
+	CGO_ENABLED=0 GOOS=linux go build -tags prod -o ./bin/api src/application/main.go
 
 linux-binaries:
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -tags "$(LIBRARY_ENV) netgo" -installsuffix netgo -o $(BIN_DIR)/api api/main.go
@@ -35,11 +37,13 @@ test:
 fmt: ## gofmt and goimports all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
 
+# First set TAG to create
 generate-docker:
-	docker build -t jahs/clinic-api .
+	docker-compose build
 
+# First set TAG to launch
 launch-docker:
-	docker-compose up -d
+	cd docker && docker-compose up -d
 
 stop-docker:
-	docker-compose down --remove-orphans --volumes
+	cd docker && docker-compose down --remove-orphans --volumes
