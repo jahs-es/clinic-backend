@@ -1,6 +1,6 @@
 # Clinic backend in Go - Perfomance test
 
-Launch using K6
+Launch using [K6](https://k6.io/)
 
 ## Launch without Grafana 
 
@@ -19,7 +19,3 @@ Launch `run-influx-grafana` from Makefile
 From console `k6 run scripts/<scenario file> --out influxdb=http://localhost:8086/k6`
 
 Open Grafana console in `http://localhost:3000` and search for `k6 perfomance test` dashboard
-
-## More info 
-
-https://github.com/k6io
