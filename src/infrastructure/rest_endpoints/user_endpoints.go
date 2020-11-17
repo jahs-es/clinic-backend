@@ -11,10 +11,6 @@ func MakeUserHandlers(r *mux.Router, n negroni.Negroni, appController controller
 		negroni.Wrap(appController.Find()),
 	)).Methods("GET", "OPTIONS").Name("Find")
 
-	r.Handle("/api/v1/user", n.With(
-		negroni.Wrap(appController.Create()),
-	)).Methods("POST", "OPTIONS").Name("createUser")
-
 	r.Handle("/api/v1/user/{id}", n.With(
 		negroni.Wrap(appController.Get()),
 	)).Methods("GET", "OPTIONS").Name("getUser")
@@ -28,4 +24,8 @@ func MakeLoginHandlers(r *mux.Router, n negroni.Negroni, appController controlle
 	r.Handle("/api/v1/login", n.With(
 		negroni.Wrap(appController.Login()),
 	)).Methods("POST", "OPTIONS").Name("login")
+
+	r.Handle("/api/v1/user", n.With(
+		negroni.Wrap(appController.Create()),
+	)).Methods("POST", "OPTIONS").Name("createUser")
 }
