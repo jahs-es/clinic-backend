@@ -9,6 +9,7 @@ import (
 	"github.com/jahs/clinic-backend/src/infrastructure/presenter/dto"
 	"github.com/jahs/clinic-backend/src/shared/auth"
 	"github.com/jahs/clinic-backend/src/shared/entity"
+	"github.com/jahs/clinic-backend/src/shared/mailer"
 	"github.com/jahs/clinic-backend/src/shared/password"
 	"time"
 )
@@ -18,6 +19,7 @@ type userUseCase struct {
 	UserPresenter  presenter2.IUserPresenter
 	Service        password.Service
 	Validator      service.UserValidator
+	Mailer         mailer.IMailer
 }
 
 type IUserUseCase interface {
@@ -28,8 +30,8 @@ type IUserUseCase interface {
 	Find(e *domain.User) ([]*dto.UserDTO, error)
 }
 
-func NewUserUseCase(r _interface.IUserRepository, p presenter2.IUserPresenter, s password.Service, v service.UserValidator) *userUseCase {
-	return &userUseCase{r, p, s, v}
+func NewUserUseCase(r _interface.IUserRepository, p presenter2.IUserPresenter, s password.Service, v service.UserValidator, m mailer.IMailer) *userUseCase {
+	return &userUseCase{r, p, s, v, m}
 }
 
 func (us *userUseCase) Login(email string, password string) (*dto.TokenDTO, error) {
@@ -48,10 +50,10 @@ func (us *userUseCase) Login(email string, password string) (*dto.TokenDTO, erro
 	createdToken, err := auth.CreateToken(user.ID)
 
 	tokenDTO := &dto.TokenDTO{
-		Id: user.ID,
-		Email: user.Email,
+		Id:         user.ID,
+		Email:      user.Email,
 		AvatarPath: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50.jpg",
-		Token: createdToken,
+		Token:      createdToken,
 	}
 
 	return tokenDTO, err
@@ -65,6 +67,8 @@ func (us *userUseCase) Create(e *domain.User) (entity.ID, error) {
 
 	//e.ID = entity.NewID()
 	e.CreatedAt = time.Now()
+	var notEncryptedPass = e.Password
+
 	pwd, err := us.Service.Generate(e.Password)
 	if err != nil {
 		return e.ID, err
@@ -72,7 +76,30 @@ func (us *userUseCase) Create(e *domain.User) (entity.ID, error) {
 
 	e.Password = pwd
 
-	return us.UserRepository.Create(e)
+	id, err := us.UserRepository.Create(e)
+	if err != nil {
+		return e.ID, err
+	}
+
+	var body = "Tu registro ha sido satisfactorio. Accede con tu pass $password."
+	var params = map[string]string{
+		"$password": notEncryptedPass,
+	}
+
+	var message = mailer.Message{
+		To:    e.Email,
+		Intro: "Bienvenido a Clinic Go!.",
+		Subject: "Registro satisfactorio en Clinic Go",
+		Body: body,
+		Params: params,
+	}
+
+	_, err = us.Mailer.Send(message)
+	if err != nil {
+		return e.ID, err
+	}
+
+	return id, err
 }
 
 func (us *userUseCase) Get(id entity.ID) (*dto.UserDTO, error) {
@@ -85,7 +112,7 @@ func (us *userUseCase) Get(id entity.ID) (*dto.UserDTO, error) {
 	fmt.Println(u)
 
 	return &dto.UserDTO{
-		ID: u.ID,
+		ID:     u.ID,
 		Email:  u.Email,
 		Name:   u.Name,
 		Rol:    u.Rol,

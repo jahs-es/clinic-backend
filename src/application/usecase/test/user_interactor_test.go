@@ -7,6 +7,7 @@ import (
 	"github.com/jahs/clinic-backend/src/infrastructure/persistence"
 	"github.com/jahs/clinic-backend/src/infrastructure/persistence/test"
 	presenter2 "github.com/jahs/clinic-backend/src/infrastructure/presenter"
+	mailer2 "github.com/jahs/clinic-backend/src/shared/mailer"
 	"github.com/jahs/clinic-backend/src/shared/password/test"
 	"testing"
 
@@ -17,8 +18,9 @@ func Test_Create(t *testing.T) {
 	repo := persistence.NewInmemUserRepository()
 	presenter := presenter2.NewUserPresenter()
 	validator := service.NewUserValidator(repo)
+	mailer := mailer2.NewFakeMailer()
 
-	m := usecase.NewUserUseCase(repo, presenter, test.NewFakeService(), validator)
+	m := usecase.NewUserUseCase(repo, presenter, test.NewFakeService(), validator, mailer)
 	u := user.NewFixtureUser()
 	id, err := m.Create(u)
 
@@ -32,8 +34,9 @@ func Test_SearchAndFind(t *testing.T) {
 	repo := persistence.NewInmemUserRepository()
 	presenter := presenter2.NewUserPresenter()
 	validator := service.NewUserValidator(repo)
+	mailer := mailer2.NewFakeMailer()
 
-	m := usecase.NewUserUseCase(repo, presenter, test.NewFakeService(), validator)
+	m := usecase.NewUserUseCase(repo, presenter, test.NewFakeService(), validator, mailer)
 	u := user.NewFixtureUser()
 	_, _ = m.Create(u)
 
@@ -56,8 +59,9 @@ func TestDelete(t *testing.T) {
 	repo := persistence.NewInmemUserRepository()
 	presenter := presenter2.NewUserPresenter()
 	validator := service.NewUserValidator(repo)
+	mailer := mailer2.NewFakeMailer()
 
-	m := usecase.NewUserUseCase(repo, presenter, test.NewFakeService(), validator)
+	m := usecase.NewUserUseCase(repo, presenter, test.NewFakeService(), validator, mailer)
 	u := user.NewFixtureUser()
 	u1, err := m.Create(u)
 

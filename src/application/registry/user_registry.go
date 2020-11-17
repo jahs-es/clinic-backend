@@ -8,6 +8,7 @@ import (
 	"github.com/jahs/clinic-backend/src/infrastructure/persistence"
 	"github.com/jahs/clinic-backend/src/infrastructure/persistence/interface"
 	"github.com/jahs/clinic-backend/src/infrastructure/presenter"
+	"github.com/jahs/clinic-backend/src/shared/mailer"
 	s "github.com/jahs/clinic-backend/src/shared/password"
 )
 
@@ -24,7 +25,7 @@ func (r *userRegistry) NewUserController() controller2.UserController {
 }
 
 func (r *userRegistry) NewUserInteractor() usecase.IUserUseCase {
-	return usecase.NewUserUseCase(r.NewUserRepository(), r.NewUserPresenter(), s.NewService(), r.NewUserValidator())
+	return usecase.NewUserUseCase(r.NewUserRepository(), r.NewUserPresenter(), s.NewService(), r.NewUserValidator(), mailer.NewSendGridMailer())
 }
 
 func (r *userRegistry) NewUserValidator() service.UserValidator {
