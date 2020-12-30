@@ -91,7 +91,7 @@ func (r *MySQLPatientRepo) GetByEmail(email string) (*domain.Patient, error) {
 
 func (r *MySQLPatientRepo) Update(e *domain.Patient) error {
 	e.UpdatedAt = time.Now()
-	_, err := r.db.Exec("update patient set avatar_path = ?, name = ?, address = ?, email = ?, phone = ?, updated_at = ?, updated_by = ? where id = ?", e.AvatarPath, e.Name, e.Address, e.Email, e.Phone, e.UpdatedAt.Format("2006-01-02"),e.UpdatedBy, e.ID)
+	_, err := r.db.Exec("update patient set name = ?, address = ?, email = ?, phone = ?, updated_at = ?, updated_by = ? where id = ?", e.Name, e.Address, e.Email, e.Phone, e.UpdatedAt.Format("2006-01-02"),e.UpdatedBy, e.ID)
 	if err != nil {
 		return err
 	}
