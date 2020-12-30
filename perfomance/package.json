@@ -24,6 +24,7 @@
   "author": "jahs",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "faker": "^4.1.0"
   }
 }

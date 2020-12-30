@@ -1,7 +1,7 @@
-import http from 'k6/http';
-import { check, sleep, group } from 'k6';
+import http from 'k6/http'
+import { check, sleep, group } from 'k6'
 import uuid from "uuid"
-
+import { name, internet, address } from 'faker/locale/es'
 const API_URL = 'http://localhost:3001/api'
 
 export let options = {
@@ -26,20 +26,26 @@ export let options = {
             maxDuration: '30s',
         },
     },
-};
-
-function getRandomNumber() {
-    return Math.floor(Math.random() * 1000000);
 }
 
-const SLEEP_DURATION = 0.1;
+function getRandomArbitraryBetween(max) {
+    const min = 0
+    return Math.random() * (max - min) + min
+}
+
+function getAvatarPath() {
+    const id = getRandomArbitraryBetween(220)
+    return `https://marmelab.com/posters/avatar-${id}.jpeg`
+}
+
+const SLEEP_DURATION = 0.1
 
 export function setup() {
     // Login
     let body = JSON.stringify({
         email: 'admin@gmail.com',
         password: 'admin',
-    });
+    })
     let params = {
         headers: {
             'Content-Type': 'application/json',
@@ -47,59 +53,72 @@ export function setup() {
         tags: {
             name: 'login',
         },
-    };
+    }
 
-    let login_response = http.post(`${API_URL}/v1/login`, body, params);
+    console.log('Init connection')
+    let login_response = http.post(`${API_URL}/v1/login`, body, params)
+    console.log('login_response', login_response)
 
     check(login_response, {
         'is status 200': (r) => r.status === 200,
         'is token present': (r) => login_response.json('token') !== '',
-    });
+    })
 
-    let authToken = login_response.json('token');
+    let authToken = login_response.json('token')
 
-    return authToken;
+    return authToken
 }
 
 export function search_patients(authToken) {
     let params = {
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${authToken}` },
         tags: { name: 'Get patient list' },
-    };
+    }
 
     group("Search patients", function () {
-        let get_patients_response = http.get(`${API_URL}/v1/patient?name=Name${getRandomNumber()}&email=mail${getRandomNumber()}&address=Address${getRandomNumber()}`, params);
+        const first_name = name.firstName()
+        const last_name = name.lastName()
+        const email = internet.email(first_name, last_name)
+        const street =  address.streetAddress(false)
+
+        let get_patients_response = http.get(`${API_URL}/v1/patient?name=${first_name}&email=${email}&address=${street}`, params)
 
         check(get_patients_response, {
             'is status 200': (r) => r.status === 200
-        });
+        })
 
-        sleep(SLEEP_DURATION);
-    });
+        sleep(SLEEP_DURATION)
+    })
 }
 
 export function insert_patients(authToken) {
     let params = {
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${authToken}` },
         tags: { name: 'Insert patients' },
-    };
+    }
 
     group("Insert patients", function () {
+        const first_name = name.firstName()
+        const last_name = name.lastName()
+        const email = internet.email(first_name, last_name)
+        const street =  address.streetAddress(false)
+
         let bodyInsert = JSON.stringify({
             "id": uuid.v1(),
-            "name": `Name${getRandomNumber()}`,
-            "address": `Address${getRandomNumber()}`,
-            "email": `mail${getRandomNumber()}@gmail.com`,
-            "phone": `968${getRandomNumber()}`
-        });
+            "name": `${first_name} ${last_name}`,
+            "address": `${street}`,
+            "email": `${email}`,
+            "phone": `968${getRandomArbitraryBetween(10000)}`,
+            "avatar_path": getAvatarPath()
+        })
 
-        let post_patients_response = http.post(`${API_URL}/v1/patient`, bodyInsert, params);
+        let post_patients_response = http.post(`${API_URL}/v1/patient`, bodyInsert, params)
 
         check(post_patients_response, {
             'is status 201': (r) => r.status === 201
-        });
+        })
 
-        sleep(SLEEP_DURATION);
-    });
+        sleep(SLEEP_DURATION)
+    })
 }
 
