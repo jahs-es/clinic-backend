@@ -30,7 +30,7 @@ export let options = {
 
 function getRandomArbitraryBetween(max) {
     const min = 0
-    return Math.random() * (max - min) + min
+    return Math.floor(Math.random() * (max - min) + min)
 }
 
 function getAvatarPath() {
